@@ -10,17 +10,17 @@ const app = express();
 const prisma = new PrismaClient();
 
 // Middlewares
-app.use(cors()); // Permite que tu Frontend se conecte a este Backend
-app.use(express.json()); // Permite que el servidor entienda archivos JSON
+app.use(cors()); 
+app.use(express.json()); 
 
 
 app.get('/api/negocios', async (req, res) => {
     try {
         const negocios = await prisma.businesses.findMany({
             include: {
-                services: true, // Incluye los servicios de cada negocio
+                services: true, 
                 owners: {
-                    select: { full_name: true, email: true } // Solo trae datos no sensibles del dueño
+                    select: { full_name: true, email: true } 
                 }
             }
         });
@@ -47,7 +47,7 @@ app.post('/api/citas', async (req, res) => {
     try {
         const { client_id } = req.body;
 
-// Verificar si el cliente existe antes de proceder
+
 const clienteExiste = await prisma.clients.findUnique({
     where: { id: Number(client_id) }
 });
@@ -58,8 +58,8 @@ if (!clienteExiste) {
         detalle: `El cliente con ID ${client_id} no existe en ColimaConnect. Revisa Prisma Studio.` 
     });
 }
-        // 2. Calculamos el end_time automáticamente
-        // Buscamos la duración del servicio en la DB primero
+
+      
         const servicio = await prisma.services.findUnique({
             where: { id: service_id }
         });
@@ -71,7 +71,7 @@ if (!clienteExiste) {
         const startDate = new Date(start_time);
         const endDate = new Date(startDate.getTime() + servicio.duration_minutes * 60000);
 
-        // 3. Guardamos la cita en MySQL usando Prisma
+        
         const nuevaCita = await prisma.appointments.create({
             data: {
                 business_id,
@@ -80,12 +80,12 @@ if (!clienteExiste) {
                 staff_id,
                 start_time: startDate,
                 end_time: endDate,
-                total_price: total_price || servicio.price, // Si no mandan precio, usamos el del servicio
-                status: 'pending' // Estado inicial por defecto
+                total_price: total_price || servicio.price, 
+                status: 'pending' 
             }
         });
 
-        // 4. Respondemos con la cita creada
+        
         res.status(201).json({
             message: "Cita agendada con éxito en ColimaConnect",
             cita: nuevaCita
@@ -98,7 +98,7 @@ if (!clienteExiste) {
 });
 // Ruta de verificacion de conexion
 app.get('/', (req, res) => {
-    res.send('🚀 ColimaConnect API funcionando');
+    res.send('ColimaConnect API funcionando');
 });
 
 const PORT = process.env.PORT || 3001;

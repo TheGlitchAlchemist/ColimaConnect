@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "SaaS ColimaConnect - Gestión de Citas Multi-tenant",
+  "description": "Gestión de Citas Multi-tenant",
   "main": "src/index.ts",
   "scripts": {
     "dev": "ts-node src/index.ts",
